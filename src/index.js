@@ -1,44 +1,65 @@
 module.exports = function check(str, bracketsConfig) {
-
   const strToArr = str.split('')
+
+  console.log('str.length', str.length)
 
   console.log('strToArr', strToArr)
 
-  // loop through inner arrays of bracketsConfig to check for odd 
+  const OPEN_BRACKETS = []
 
-  for (let arr of bracketsConfig) {
-    console.log('arr inside BC array', arr)
-    // loop through elements of bracketsConfig inner arr 
+  const CLOSE_BRACKETS = []
 
-    let evenOdd = 0
+  const BRACKETS_PAIR = {}
 
-    // take each element of inner array and filter the str then count even odd -> if odd return false
-    arr.forEach(el => {
-
-      // console.log('el of arr in brackets config', el)
-
-      let filteredChar = strToArr.filter(strEl => el === strEl)
-
-      // console.log('filteredChar', filteredChar)
-
-      evenOdd += filteredChar.length
-    });
-
-    // console.log('evenOdd', evenOdd)
-
-    if (evenOdd % 2 !== 0) return false
-
+  for (let innerArr of bracketsConfig) {
+    // console.log('innerArr[0]', innerArr[0])
+    OPEN_BRACKETS.push(innerArr[0])
+    // console.log('innerArr[1]', innerArr[1])
+    CLOSE_BRACKETS.push(innerArr[1])
   }
 
-  for (let arr of bracketsConfig) {
-
-    if (strToArr.indexOf(arr[0]) === 0 && (strToArr.indexOf(arr[1]) - strToArr.indexOf(arr[0])) % 2 === 0) return false
-
-    console.log('strToArr.indexOf(arr[0])', strToArr.indexOf(arr[0]))
-
-    console.log('strToArr.lastIndexOf(8)', strToArr.lastIndexOf(arr[1]))
-
+  for (let i in OPEN_BRACKETS) {
+    // console.log('i', i)
+    BRACKETS_PAIR[[CLOSE_BRACKETS[i]]] = OPEN_BRACKETS[i]
   }
-  return true
 
+  // console.log('OPEN_BRACKETS', OPEN_BRACKETS)
+  // console.log('CLOSE_BRACKETS', CLOSE_BRACKETS)
+  // brackets pair dictionary
+
+  console.log('BRACKETS_PAIR', BRACKETS_PAIR)
+
+  let stack = []
+  // let firstRun = []
+  let lastChar = strToArr[0]
+
+  stack.push(strToArr[0])
+
+  console.log('stack push first str element', stack)
+
+  for (let i = 1; i <= strToArr.length - 1; i++) {
+
+    console.log('str index', i)
+    let currentChar = strToArr[i]
+    // if (currentChar === undefined) { break }
+    console.log('currentChar', currentChar)
+    let topStackEl = stack[stack.length - 1]
+    console.log('top stack el', topStackEl)
+    if (stack.length !== 0) {
+      if (BRACKETS_PAIR[currentChar] === topStackEl) {
+        console.log('stack pop ->', currentChar)
+        stack.pop()
+      }
+      else {
+        console.log('stack push <-')
+        stack.push(currentChar)
+      }
+    }
+    else {
+      console.log('stack push <-')
+      stack.push(currentChar)
+    }
+    console.log('stack', stack)
+  }
+  return stack.length === 0 ? true : false
 }
